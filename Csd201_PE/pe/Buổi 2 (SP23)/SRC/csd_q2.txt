@@ -1,0 +1,344 @@
+Q2-f1==============================insert vao tree========================
+void insert(String xForest, int xHoof, int xHair) {
+ if (xForest.charAt(0) == 'B') {
+            return;           			
+        }
+        Node q = new Node(new Bison(xForest, xHoof, xHair));
+        if (isEmpty()) {
+            root = q;
+            return;
+        }
+        Node p = root;
+        Node f = null; // f is the father of p
+        while (p != null) {
+            if (xHoof == p.info.hoof) {
+                return;
+            } // end if
+            f = p;
+            if (xHoof < p.info.hoof) {
+                p = p.left;
+            } else {
+                p = p.right;
+            }
+        } // end while
+
+        if (xHoof < f.info.hoof) {
+            f.left = q;
+        } else {
+            f.right = q;
+        }
+}
+Q2-f2================================modify cac ham co san================================
+
+//vi du 
+void preOrder2(Node p, RandomAccessFile f) throws Exception {
+      if(p==null) return;
+      if (p.info.color<6){
+          fvisit(p,f);
+      }
+      preOrder2(p.left,f);
+      preOrder2(p.right,f);
+     }
+
+public void breadth2(Node p, RandomAccessFile f) throws Exception {
+        if(p == null) 
+            return;
+        Queue q = new Queue();
+        q.enqueue(p);
+        Node r;
+        while(!q.isEmpty()) {
+            r = q.dequeue();
+            if(r.info.color<6){
+                fvisit(r,f);
+            }
+            if(r.left != null) 
+                q.enqueue(r.left);
+            
+            if(r.right != null) 
+                q.enqueue(r.right);
+        }
+    }
+
+
+
+Q2-f3====================================tim so cay con===================================
+
+//tim node thu 5   (node3 luu gia tri node can tim)
+    int count3 = 0;
+    Node node3 = null;
+    void postOrder3(Node p) {
+        if (p == null) {
+            return;
+        }
+        
+        postOrder3(p.left);
+        postOrder3(p.right);
+        //logic
+        count3++;
+        if (count3 == 5) {
+            node3 = p;
+            return;
+        }
+    }
+
+//tim so cay con
+int countNode(Node pNode) {
+        if (pNode == null) {
+            return 0;
+        }
+        int k, h, rNode;
+        k = countNode(pNode.left);
+        h = countNode(pNode.right);
+        rNode = k + h + 1;
+        return rNode;
+    }
+
+Q2-f3===============================delete by copying====================================
+
+//delete by copying
+public void deleteCopying(int x) { //Delete Node with info = x
+        if (isEmpty()) {
+            return;
+        }
+
+        Node p = root;
+        Node f = null;
+        while (p != null) {
+            if (p.info.hoof == x) {
+                break;
+            }
+            f = p;
+            if (x < p.info.hoof) {
+                p = p.left;
+            } else {
+                p = p.right;
+            }
+        } //end while
+        if (p == null) {
+            return;
+        }
+        // p has no children
+        if (p.left == null && p.right == null) {
+            if (f == null) {
+                root = null;
+                return;
+            }
+            if (f.left == p) {
+                f.left = null;
+                return;
+            } else {
+                f.right = null;
+                return;
+            }
+        }
+        // p has only left child
+        if (p.left != null && p.right == null) {
+            if (f == null) {
+                root = root.left;
+                return;
+            }
+            if (f.left == p) {
+                f.left = p.left;
+                return;
+            } else {
+                f.right = p.left;
+                return;
+            }
+        }
+        // p has only right child
+        if (p.left == null && p.right != null) {
+            if (f == null) {
+                root = root.right;
+                return;
+            }
+            if (f.left == p) {
+                f.left = p.right;
+                return;
+            } else {
+                f.right = p.right;
+                return;
+            }
+        }
+        // p has 2 children
+        if (p.left != null && p.right != null) {
+            Node q = p.left;
+            Node rp = q;
+            Node fr = null;
+            while (rp.right != null) {
+                fr = rp;
+                rp = rp.right;
+            } //end while;
+            p.info = rp.info;
+            if (fr == null) {
+                p.left = q.left;
+
+            } else {
+                fr.right = rp.left;
+            }
+
+            return;
+        }
+
+    }
+
+Q2-f4===========================tim node thu may voi yeu cau cu the=======================
+//tim node thu 2 co 2 con voi breath  (node3 luu gia tri node can tim)
+int count3=0;
+   Node node3 = null;
+   void breadth3(Node p, RandomAccessFile f) throws Exception {
+     if(p==null) return;
+     Queue q = new Queue();
+     q.enqueue(p);Node r;
+     while(!q.isEmpty()) {
+        r = q.dequeue();
+        if(r.left!=null && r.right!=null)
+            count3++;
+        if(count3==2){
+            node3=r;
+            return;
+        }
+        if(r.left!=null) q.enqueue(r.left);
+        if(r.right!=null) q.enqueue(r.right);
+       }
+    }
+// tim node thu 2 co cay con trai voi postOrder (node4 luu gia tri node can tim)
+int count4 = 0;
+    Node node4 = null;
+    void postOrder4(Node p) {
+        if (p == null) {
+            return;
+        }
+        
+        postOrder4(p.left);
+        postOrder4(p.right);
+        //logic
+        if (p.left != null){
+            count4++;
+            if (count4 == 2) {
+                node4 = p;
+                return;
+            }
+        }    
+        
+    }
+
+===================================== cac ham de quay
+//quay phai
+void rotateRight(Node p, Node fp) {
+        if (p == null || p.left == null) {
+            return ;
+        }
+
+        Node p1 = p.left;
+        p.left = p1.right;
+        p1.right = p;
+        if (fp.left == p)
+            fp.left = p1;
+        else
+            fp.right = p1;
+    }
+//quay trai
+void rotateLeft(Node p, Node fp) {
+        if (p == null || p.right == null) {
+            return ;
+        }
+
+        Node p1 = p.right;
+        p.right = p1.left;
+        p1.left = p;
+        if (fp.right == p)
+            fp.right = p1;
+        else
+            fp.left = p1;
+    }
+//tim parent
+Node searchParent(Node a) {
+        if (a == null)
+            return null;
+        Node p = root, f = null;
+        while (p != null && p != a) {
+            f = p;
+            if (p.info.weight > a.info.weight)
+                p = p.left;
+            else 
+                p = p.right;
+        }
+        return f;
+    }
+=====================================tinh height cua mot node=============================
+public int height(Node p) {
+        if (p == null) {
+            return 0;
+        }
+        int l = height(p.left) + 1;
+        int r = height(p.right) + 1;
+        return (l > r) ? l : r;
+    }
+
+
+===================================tim node co gia tri max================================
+//tim max (node cuối theo cách preOder là max)
+int count4=0;
+ Node node4 = null;
+ void preOrder4(Node p, RandomAccessFile f) throws Exception {
+      if(p==null) return;
+      int size = this.countNode(root);
+      count4++;
+      if(count4==size){
+          node4=p;
+          return;
+      }
+      preOrder4(p.left,f);
+      preOrder4(p.right,f);
+     }
+ 
+ int countNode(Node pNode) {
+        if (pNode == null) {
+            return 0;
+        }
+        int k, h, rNode;
+        k = countNode(pNode.left);
+        h = countNode(pNode.right);
+        rNode = k + h + 1;
+        return rNode;
+    }
+
+// ham main
+this.preOrder4(root, f);
+   Node fp=this.searchParent(node4);
+   if(fp!=null){
+       Node ffp=this.searchParent(fp);
+       if(fp.left==node4)
+           this.rotateRight(fp, ffp);
+       else{
+           this.rotateLeft(fp, ffp);
+       }
+       
+   }
+
+====================================tim node co gia tri min=============================
+
+//tim min (node đầu theo cách postOrder la min)
+ int count4=0;
+  Node node4 = null;
+  void postOrder4(Node p, RandomAccessFile f) throws Exception {
+      if(p==null) return;
+      postOrder4(p.left,f);
+      postOrder4(p.right,f);
+      count4++;
+      if(count4==1){
+          node4=p;
+          return;
+      }
+     }
+
+//ham main
+postOrder4(root, f);
+    Node fp= searchParent(node4);
+    if (fp != null){
+        Node fpp= searchParent(fp);
+        if (fp.left == node4)
+            this.rotateRight(fp, fpp);
+        else
+            this.rotateLeft(fp, fpp);
+    }

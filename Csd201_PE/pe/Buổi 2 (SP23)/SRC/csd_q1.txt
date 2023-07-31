@@ -1,0 +1,240 @@
+Q1-f1=======add last vao cuoi list=======
+
+void addLast(String xForest, int xHoof, int xHair) {
+    
+    if (xForest.charAt(0) == 'B') {
+                return;
+    }
+    addLast(new Bison(xForest, xHoof, xHair));
+  }
+  
+  void addLast(Bison x) {
+        Node node = new Node(x);
+
+        if (head == null) {
+            head = node;
+            tail = head;
+            return;
+        }
+
+        tail.next = node;
+        tail = node;
+    }
+
+Q1-f2=======add vao vi tri cu the=======
+
+void insertPositionK(Bike x, int position) {
+        if (isEmpty()) {
+            head = tail = new Node(x);
+        }
+        int count = 1;
+        Node p = head;
+        while (p != null && count < position) {
+            p = p.next;
+            count++;
+        }
+        Node temp = p.next;
+        p.next = new Node(x, temp);
+    }
+    
+    int size() {
+        int count = 0;
+        Node node = head;
+        while (node != null) {
+            count++;
+            node = node.next;
+        }
+
+        return count;
+    }
+
+Q1-f3======Xóa 1 Node cụ thể theo đề bài======
+
+//ham remove
+void removeFirst(){
+        if (isEmpty()){
+            return;
+        }
+        head = head.next;
+        if (head == null){
+            tail = null;
+        }
+    }
+    
+    void remove(Node q){
+        if (isEmpty() || q == null){
+            return;
+        }
+        if (q == head){
+            removeFirst();
+            return;
+        }
+        Node f = head;
+        while(f !=null && f.next != q){
+            f = f.next;
+        }
+        if (f == null){
+            return;//q ko co trong danh sach
+        }
+        Node q1 = q.next;
+        f.next = q1;
+        if (f.next == null){
+            tail = f;
+        }
+    }
+
+// ham search
+Node searchByWeight(int xWeight){
+        Node p = head;
+        while (p!=null){
+            if(p.info.weight == xWeight){
+                return p;
+            }
+            p=p.next;
+        }
+        return null;
+    }
+// cai thu 2
+Node searchByWeight(int xWeight){
+        Node p = head;
+        int count=0;
+        while (p!=null){
+            if(p.info.weight < xWeight){
+                count++;
+            }
+            if (count==2)
+                 return p;
+            p=p.next;
+        }
+        return null;
+    }
+
+Q1-f4======sort theo yeu cau de bai======
+
+//ham sort tu vi tri k den vi tri h
+Node pos(int k){
+        int i = 0;
+        Node p = head;
+        while (p!=null){
+            if (i == k){
+                return p;
+            }
+            i++;
+            p = p.next;
+        }
+        return null;
+    }
+  
+  void sort(int k, int h){
+        if (k > h){
+            return;
+        }
+        if (k < 0){
+            k = 0;
+        }
+        int n = size();
+        if ( h > n -1){
+            h = n - 1;
+        }
+        Node u = pos(k);
+        Node v = pos(h+1);
+        Node pi, pj;
+        Bike x;
+        pi = u;
+        while(pi != v){
+            pj = pi.next;
+            while ( pj != v){
+                if (pj.info.weight < pi.info.weight){
+                    x =pi.info;
+                    pi.info = pj.info;
+                    pj.info = x;
+                }
+                pj = pj.next;
+            }
+            pi = pi.next;
+        }
+    }
+//tim min
+int findMinWeight(){
+        int x;
+        Node p, q;
+        p = q = head;
+        x = head.info.weight;
+        p = p.next;
+        while (p != null){
+            if (p.info.weight < x){
+                x = p.info.weight;
+                q = p;
+            }
+            p = p.next;
+        }
+        return x;
+    }
+//tim max
+int findMaxWeight(){
+        int x;
+        Node p, q;
+        p = q = head;
+        x = head.info.weight;
+        p = p.next;
+        while (p != null){
+            if (p.info.weight > x){
+                x = p.info.weight;
+                q = p;
+            }
+            p = p.next;
+        }
+        return x;
+    }
+// tim position
+int getIndex(int rate) {
+        int indexRes = 0;
+        Node p = head;
+        while (p != null) {
+            if (p.info.rate == rate) break;
+            indexRes++;
+            p = p.next;
+        }
+        
+        return indexRes;
+    }
+======= reverse tu vi tri k den h
+
+Bike[] toArray(){
+        int i, n;
+        n = size();
+        Bike[] a = new Bike[n];
+        Node p = head;
+        i = 0;
+        while(p != null){
+            a[i++] = new Bike(p.info.brand, p.info.color, p.info.weight);
+            p = p.next;
+        }
+        return a;
+    }
+  
+  void reserve(int k, int h){
+        if (k > h){
+            return;
+        }
+        int n = size();
+        int i, j;
+        if (k < 0 || h > n - 1){
+            return;
+        }
+        Bike[] a = toArray();
+        i = k;
+        j = h;
+        Bike x;
+        while (i < j){
+            x = a[i];
+            a[i] = a[j];
+            a[j] = x;
+            i++;
+            j--;
+        }
+        clear();
+        for (i = 0; i < n; i++){
+            addLast(a[i]);
+        }
+    }

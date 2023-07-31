@@ -1,0 +1,93 @@
+Q3-f1==============
+int count=0;
+  void depth1(boolean [] visited,int k, RandomAccessFile f) throws Exception {
+      count++;
+      if (count>=2 && count<=7)
+        fvisit(k,f);
+    visited[k]=true;
+    for(int i=0;i<n;i++) {
+      if(!visited[i] && a[k][i]>0) depth1(visited,i,f);
+     }
+   }
+  void depth1(int k, RandomAccessFile f) throws Exception {
+    boolean [] visited = new boolean[20];
+    int i;
+    for(i=0;i<n;i++) visited[i]=false;
+    depth1(visited,k,f);
+    for(i=0;i<n;i++) 
+       if(!visited[i]) depth1(visited,i,f);
+   }
+Q3-f2==============
+
+void dijkstra(int fro, int to, RandomAccessFile f) throws Exception {
+        int INF = 999; // infinity value
+        boolean[] S = new boolean[n]; // kiem tra xem da duyet dinh chua
+        int[] d = new int[n]; // luu gia tri duong di ngan nhat tai dinh do
+        int[] p = new int[n]; // luu gia tri dinh gan no nhat
+        
+        for (int i = 0; i < n; i++) {
+            S[i] = false;
+            d[i] = a[fro][i];
+            p[i] = fro;
+        }
+      
+        ArrayList<Integer> ss = new ArrayList<>(); // cac dinh duoc lay     
+        // them fro vao ss
+        S[fro] = true;
+        ss.add(fro);
+        
+        // Duyet cac dinh, tim min quang duong, them vao tap ss
+        int k, t;
+        while (true) {
+            k = -1;
+            t = INF;
+            for (int i = 0; i < n; i++) {
+                if (S[i] == true) continue;
+                if (d[i] < t) {
+                    k = i;
+                    t = d[i];
+                }
+            }
+            if (k == -1) return; // no solution            
+            S[k] = true; // select k into the set ss
+            ss.add(k);
+            if (k == to) break;
+            // Recalculate d[i]
+            for (int i = 0; i < n; i++) {
+                if (S[i] == true) continue;
+                if (d[i] > d[k] + a[k][i]) {
+                    d[i] = d[k] + a[k][i];
+                    p[i] = k;
+                }
+            }
+        }
+        
+        // truy nguoc lai cac dinh tu to ve fro
+        Stack s = new Stack(); 
+        int x = to;
+        while (true) {
+            s.push(x);
+            if (x == fro) break;
+            x = p[x]; // truy nguoc ve dinh lien truoc no
+        }
+        
+        ArrayList<Integer> pp = new ArrayList<>();  
+        while (!s.isEmpty()) { // loi tu stack s sang pp
+            x = s.pop();
+            pp.add(x);
+        }
+        //pp la mang chua cac dinh(theo so) sau khi thuc hien thuat toan dijkstra (keyword: vertices in shortest path)
+        //ss la mang cac dinh(theo so) duoc chon trong qua trinh thuc hien thuan toan dijkstra  (keyword: vertices selected into the set S)
+        //muon doi sang dang ten (A, B, ..) thi phai viet v[pp.get(i)] , v[ss.get(i)]
+        //d la mang chua label cua cac dinh d[pp.get(i)], d[ss.get(i)], shortest distance: d[ss.get(ss.size()-1)] (keywors; labels)
+        
+        
+        f.writeBytes("" + v[pp.get(0)]+ "->" + v[pp.get(pp.size()-1)]+":"+ d[ss.get(ss.size()-1)]);
+        f.writeBytes("\r\n");
+        
+        // In ra cac dinh duoc chon lan luot theo thuat toan
+        f.writeBytes("" + v[ss.get(ss.size()-4)] + "-" + d[ss.get(ss.size()-4)]);
+        for (int i = ss.size()-3; i < ss.size(); i++) 
+            f.writeBytes(" " + v[ss.get(i)] + "-" + d[ss.get(i)]);
+        f.writeBytes("\r\n");
+    }
